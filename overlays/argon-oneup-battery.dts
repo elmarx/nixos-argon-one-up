@@ -1,0 +1,20 @@
+/dts-v1/;
+/plugin/;
+
+/ {
+	compatible = "raspberrypi,5-model-b", "raspberrypi,5-compute-module";
+
+	fragment@0 {
+		target = <&i2c1>;
+		__overlay__ {
+			#address-cells = <1>;
+			#size-cells = <0>;
+			status = "okay";
+
+			battery@64 {
+				compatible = "argon40,oneup-battery";
+				reg = <0x64>;
+			};
+		};
+	};
+};
