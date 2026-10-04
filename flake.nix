@@ -23,6 +23,10 @@
           ...
         }:
         {
+
+          # Built against the nixpkgs kernel for CI/inspection; the NixOS module
+          # builds against the host's own kernel instead.
+          packages.oneUpPower = pkgs.linuxPackages.callPackage ./pkgs/oneUpPower.nix { };
           devShells.default = pkgs.mkShell {
             packages = [
               pkgs.nil
