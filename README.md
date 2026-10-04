@@ -18,6 +18,7 @@ Add the flake as an input and import individual outputs into a NixOS configurati
       modules = [
         argon-one-up.nixosModules.battery
         argon-one-up.nixosModules.fan
+        argon-one-up.nixosModules.sensors
       ];
     };
   };
@@ -30,6 +31,7 @@ In a flake-parts host inventory, import them where the host's NixOS modules are 
 modules = [
   inputs.argon-one-up.nixosModules.battery
   inputs.argon-one-up.nixosModules.fan
+  inputs.argon-one-up.nixosModules.sensors
 ];
 ```
 
@@ -40,6 +42,7 @@ modules = [
 | `nixosModules.battery` | Battery support for the CW2217 fuel gauge via the `oneUpPower` kernel driver (a `power_supply` device); enables I2C. |
 | `nixosModules.battery-daemon` | Battery support via a userspace daemon exposing a UPower-compatible D-Bus device; enables I2C. Alternative to `battery`. |
 | `nixosModules.fan` | Configures the four-point Argon fan curve through Raspberry Pi firmware parameters. |
+| `nixosModules.sensors` | Installs Argon-oriented `lm-sensors` labels. |
 
 Each feature is enabled as soon as its module is imported; set the module's `enable` option to `false` to turn it off.
 
@@ -76,3 +79,5 @@ services.argon-one-up.fan = {
   ];
 };
 ```
+
+The `sensors` module only adds labels for sensors exposed by the kernel; it does not enable the battery driver or control the fan.
