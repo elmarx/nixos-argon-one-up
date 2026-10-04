@@ -27,6 +27,8 @@
           # Built against the nixpkgs kernel for CI/inspection; the NixOS module
           # builds against the host's own kernel instead.
           packages.oneUpPower = pkgs.linuxPackages.callPackage ./pkgs/oneUpPower.nix { };
+          packages.argon-one-up-daemon = pkgs.callPackage ./pkgs/argon-one-up-daemon { };
+
           devShells.default = pkgs.mkShell {
             packages = [
               pkgs.nil
