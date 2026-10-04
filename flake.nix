@@ -37,6 +37,7 @@
         };
       flake = {
         nixosModules = {
+          battery = ./modules/battery.nix;
         };
       };
     };
