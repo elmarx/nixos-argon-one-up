@@ -42,6 +42,7 @@
           battery = ./modules/battery.nix;
           battery-daemon = ./modules/battery-daemon.nix;
           fan = ./modules/fan.nix;
+          sensors = ./modules/sensors.nix;
         };
       };
     };
