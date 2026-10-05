@@ -41,6 +41,7 @@
         nixosModules = {
           battery = ./modules/battery.nix;
           battery-daemon = ./modules/battery-daemon.nix;
+          display = ./modules/display.nix;
           fan = ./modules/fan.nix;
           sensors = ./modules/sensors.nix;
         };
