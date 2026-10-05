@@ -1,0 +1,37 @@
+/dts-v1/;
+/plugin/;
+
+/ {
+	compatible = "raspberrypi,5-model-b", "raspberrypi,5-compute-module";
+
+	fragment@0 {
+		target = <&rp1_gpio>;
+		__overlay__ {
+			lid_pins: lid_pins {
+				brcm,pins = <27>;
+				brcm,function = <0>; /* input */
+				brcm,pull = <2>; /* pull up */
+			};
+		};
+	};
+
+	fragment@1 {
+		target-path = "/";
+		__overlay__ {
+			lid_switch {
+				compatible = "gpio-keys";
+				pinctrl-names = "default";
+				pinctrl-0 = <&lid_pins>;
+				status = "okay";
+
+				lid {
+					label = "Lid Switch";
+					linux,input-type = <5>; /* EV_SW */
+					linux,code = <0>; /* SW_LID */
+					gpios = <&rp1_gpio 27 1>; /* active low: low means closed */
+					debounce-interval = <100>;
+				};
+			};
+		};
+	};
+};

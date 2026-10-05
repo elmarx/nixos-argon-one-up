@@ -43,6 +43,7 @@
           battery-daemon = ./modules/battery-daemon.nix;
           display = ./modules/display.nix;
           fan = ./modules/fan.nix;
+          lid = ./modules/lid.nix;
           sensors = ./modules/sensors.nix;
         };
       };

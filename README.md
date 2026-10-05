@@ -19,6 +19,7 @@ Add the flake as an input and import individual outputs into a NixOS configurati
         argon-one-up.nixosModules.battery
         argon-one-up.nixosModules.display
         argon-one-up.nixosModules.fan
+        argon-one-up.nixosModules.lid
         argon-one-up.nixosModules.sensors
       ];
     };
@@ -33,6 +34,7 @@ modules = [
   inputs.argon-one-up.nixosModules.battery
   inputs.argon-one-up.nixosModules.display
   inputs.argon-one-up.nixosModules.fan
+  inputs.argon-one-up.nixosModules.lid
   inputs.argon-one-up.nixosModules.sensors
 ];
 ```
@@ -45,6 +47,7 @@ modules = [
 | `nixosModules.battery-daemon` | Battery support via a userspace daemon exposing a UPower-compatible D-Bus device; enables I2C. Alternative to `battery`. |
 | `nixosModules.display` | Display brightness control: the panel has no backlight device, so brightness is set over DDC/CI. Enables `hardware.i2c` and installs `ddcutil`. |
 | `nixosModules.fan` | Configures the four-point Argon fan curve through Raspberry Pi firmware parameters. |
+| `nixosModules.lid` | Exposes the lid sensor (GPIO 27) as a standard `SW_LID` input switch via a device-tree overlay, so logind and desktops can react to it. |
 | `nixosModules.sensors` | Installs Argon-oriented `lm-sensors` labels. |
 
 Each feature is enabled as soon as its module is imported; set the module's `enable` option to `false` to turn it off.
@@ -84,5 +87,7 @@ services.argon-one-up.fan = {
 ```
 
 The `display` module makes brightness adjustable with `ddcutil` (find the HDMI I2C bus with `ddcutil detect`, e.g. `ddcutil --bus 14 setvcp 10 50`); desktop brightness controls that support DDC/CI can use it too. Users with a seat get access to the I2C devices; others need the `i2c` group.
+
+The `lid` module's `action` option (`lock` by default, also `ignore` or `poweroff`) sets logind's `HandleLidSwitch`. Suspend is deliberately not offered: the Raspberry Pi 5 cannot suspend and a suspend attempt leaves a black screen. It conflicts with the `battery-daemon` module, which reads the same GPIO itself (asserted). The overlay is untested on hardware: check with `libinput list-devices` or `evtest` that a "Lid Switch" device exists.
 
 The `sensors` module only adds labels for sensors exposed by the kernel; it does not enable the battery driver or control the fan.
