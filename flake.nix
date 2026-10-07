@@ -41,6 +41,7 @@
         nixosModules = {
           battery = ./modules/battery.nix;
           battery-daemon = ./modules/battery-daemon.nix;
+          brightness = ./modules/brightness.nix;
         };
       };
     };

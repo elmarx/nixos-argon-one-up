@@ -17,6 +17,7 @@ Add the flake as an input and import individual outputs into a NixOS configurati
       system = "aarch64-linux";
       modules = [
         argon-one-up.nixosModules.battery
+        argon-one-up.nixosModules.brightness
       ];
     };
   };
@@ -28,6 +29,7 @@ In a flake-parts host inventory, import them where the host's NixOS modules are 
 ```nix
 modules = [
   inputs.argon-one-up.nixosModules.battery
+  inputs.argon-one-up.nixosModules.brightness
 ];
 ```
 
@@ -37,6 +39,7 @@ modules = [
 | --- | --- |
 | `nixosModules.battery` | Battery support for the CW2217 fuel gauge via the `oneUpPower` kernel driver (a `power_supply` device); enables I2C. |
 | `nixosModules.battery-daemon` | Battery support via a userspace daemon exposing a UPower-compatible D-Bus device; enables I2C. Alternative to `battery`. |
+| `nixosModules.brightness` | Display brightness control: a backlight device (via the `ddcci` kernel driver), so `brightnessctl` works. |
 
 Each feature is enabled as soon as its module is imported; set the module's `enable` option to `false` to turn it off.
 
@@ -60,3 +63,11 @@ services.argon-one-up.battery.shutdownThreshold = 5;
 - `services.argon-one-up.battery-daemon.package` — Daemon package (also exposed as `packages.<system>.argon-one-up-daemon`)
 
 The kernel driver source is fetched by a pinned raw-file URL; its source file declares SPDX `GPL-2.0-only`. The repository does not copy the upstream project or its installer scripts.
+
+### Brightness
+
+`nixosModules.brightness` builds the [ddcci-driver](https://gitlab.com/ddcci-driver-linux/ddcci-driver-linux) kernel modules against `boot.kernelPackages` and attaches them to the display's DDC/CI lines. This creates a regular `/sys/class/backlight/ddcci<N>` device, so `brightnessctl` works; its udev rules let members of the `video` group change the brightness. Options:
+
+- `services.argon-one-up.brightness.enable` — Enables brightness control (default: true)
+- `services.argon-one-up.brightness.package` — ddcci module package (default: `boot.kernelPackages.ddcci-driver`)
+- `services.argon-one-up.brightness.bus` — I2C bus of the display (default: 14)
