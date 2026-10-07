@@ -38,6 +38,7 @@
       flake = {
         nixosModules = {
           battery = ./modules/battery.nix;
+          brightness = ./modules/brightness.nix;
         };
       };
     };
