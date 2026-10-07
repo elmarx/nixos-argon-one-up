@@ -1,6 +1,6 @@
 # Argon ONE UP NixOS modules
 
-This flake exports opt-in NixOS modules for Argon ONE UP hardware. Each feature is independently importable; there is no aggregate module, so hosts can select only the support they need.
+This flake exports opt-in NixOS modules for [Argon ONE UP](https://argon40.com/en-de/products/argon-one-up-cm5-laptop-core-system) hardware. Each feature is independently importable; there is no aggregate module, so hosts can select only the support they need.
 
 The battery module uses options from [`nixos-raspberrypi`](https://github.com/nvmd/nixos-raspberrypi). Import its Raspberry Pi 5 base module in the host configuration before enabling these features; enabling them without it fails with an assertion.
 
