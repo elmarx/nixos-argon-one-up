@@ -39,6 +39,7 @@
         nixosModules = {
           battery = ./modules/battery.nix;
           brightness = ./modules/brightness.nix;
+          fan = ./modules/fan.nix;
         };
       };
     };
