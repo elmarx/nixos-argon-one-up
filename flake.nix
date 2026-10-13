@@ -41,6 +41,7 @@
           brightness = ./modules/brightness.nix;
           fan = ./modules/fan.nix;
           lid = ./modules/lid.nix;
+          sensors = ./modules/sensors.nix;
         };
       };
     };

@@ -20,6 +20,7 @@ Add the flake as an input and import individual outputs into a NixOS configurati
         argon-one-up.nixosModules.brightness
         argon-one-up.nixosModules.fan
         argon-one-up.nixosModules.lid
+        argon-one-up.nixosModules.sensors
       ];
     };
   };
@@ -34,6 +35,7 @@ modules = [
   inputs.argon-one-up.nixosModules.brightness
   inputs.argon-one-up.nixosModules.fan
   inputs.argon-one-up.nixosModules.lid
+  inputs.argon-one-up.nixosModules.sensors
 ];
 ```
 
@@ -45,6 +47,7 @@ modules = [
 | `nixosModules.brightness` | Display brightness control: a backlight device (via the `ddcci` kernel driver), so `brightnessctl` works. |
 | `nixosModules.fan` | Configures the four-point Argon fan curve through Raspberry Pi firmware parameters. |
 | `nixosModules.lid` | Exposes the lid sensor (GPIO 27) as a standard `SW_LID` input switch via a device-tree overlay, so logind and desktops can react to it; defaults logind's lid action to `lock`. |
+| `nixosModules.sensors` | Installs `lm-sensors` with Argon-oriented sensor labels. |
 
 Each feature is enabled as soon as its module is imported; set the module's `enable` option to `false` to turn it off.
 
@@ -97,3 +100,7 @@ For comparison [JeffCurless/argon-oneup](https://github.com/JeffCurless/argon-on
 `nixosModules.lid` maps the lid sensor (GPIO 27) to a standard `SW_LID` input switch via a device-tree overlay, so logind, UPower and desktops see the lid state. It also sets `services.logind.settings.Login.HandleLidSwitch` and `HandleLidSwitchDocked` to `lock` with `mkDefault`: logind's default (`suspend`) leaves the Raspberry Pi 5, which cannot suspend, with a black screen, and the built-in display can make logind consider the machine docked, which uses `HandleLidSwitchDocked` (default `ignore`). Override them as usual; the module warns if one of them (or `HandleLidSwitchExternalPower`) is set to a suspend action. Option: `services.argon-one-up.lid.enable` (default: true).
 
 logind only sends a lock request: a session needs a listener for it (e.g. `swayidle -w lock 'swaylock -f'` in Sway). Plasma and GNOME use their own lid setting. The overlay's input device is named `lid_switch`; verify events with `evtest`.
+
+### Sensors
+
+`nixosModules.sensors` installs `lm-sensors` and an `/etc/sensors.d/argon-one-up.conf` with readable labels for the CPU, RP1, fan, NVMe and battery sensors. It only labels sensors the kernel already exposes; it does not enable the battery driver or control the fan. Option: `services.argon-one-up.sensors.enable` (default: true).
